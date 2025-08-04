@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Список постов</title>
+</head>
+<body>
+<form th:action="@{/add-post}" method="get">
+    <button type="submit" style="float:right;">Добавить пост</button>
+</form>
+<table style="width:50%;margin-left:auto;margin-right:auto;">
+    <tr>
+        <td>
+            <form th:action="@{/posts}" method="get">
+                <p>
+                    <label for="tag">Поиск по тегу (без #): </label>
+                    <input id="tag" style="width:300px;" name="tag" th:value="${param.tag}">
+                    <button type="submit">&#128269;</button>
+                </p>
+                <p>
+                    <label for="size">Число постов: </label>
+                    <select id="size" name="size" onchange="this.form.submit()">
+                        <option value="10" th:selected="${currentSize == 10}">10</option>
+                        <option value="20" th:selected="${currentSize == 20}">20</option>
+                        <option value="50" th:selected="${currentSize== 50}">50</option>
+                    </select>
+                </p>
+                <p>
+                    <!-- Кнопка "Назад" -->
+                    <button th:if="${currentPage > 1}"
+                            type="submit"
+                            name="page"
+                            th:value="${currentPage - 1}">&lt;
+                    </button>
+
+                    <!-- Отображение текущей страницы и всего страниц -->
+                    <span th:text="'Страница ' + ${currentPage} + ' из ' + ${totalPages}"></span>
+
+                    <!-- Кнопка "Вперед" -->
+                    <button th:if="${currentPage < totalPages}"
+                            type="submit"
+                            name="page"
+                            th:value="${currentPage + 1}">&gt;
+                    </button>
+                </p>
+            </form>
+        </td>
+    </tr>
+    <!-- В each итерируемся по списку постов -->
+    <tr th:each="post : ${posts}">
+        <td style="border-bottom:thin solid;">
+            <div>
+                <h2>
+                    <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}"
+                       style="color: #333; text-decoration: none;"></a>
+                </h2>
+            </div>
+            <div>
+                <img th:src="@{${post.imagePath}}" style="max-width: 300px;">
+            </div>
+            <div style="white-space: pre-line;" th:text="${post.content}"></div>
+            <p>
+                <!-- Число лайков поста -->
+                <i class="fas fa-thumbs-up"></i>
+                <span th:text="${post.likes}"></span>
+
+                <!-- Число комментариев поста -->
+                <i class="fas fa-comment" style="margin-left: 15px;"></i>
+                <span th:text="${post.commentCount}"></span>
+            </p>
+            <p>
+                <!-- Для каждого тега добавляем # и пробел после -->
+                <span th:each="tag : ${post.tags}" th:text="'#' + ${tag} + ' '"></span>
+            </p>
+        </td>
+    </tr>
+</table>
+</body>
