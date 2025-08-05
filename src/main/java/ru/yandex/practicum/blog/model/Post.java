@@ -12,5 +12,6 @@ public class Post {
     private String imagePath;
     private int likes;
     private int commentCount;
-    private List<String> tags;
+    private String tags;
+    private List<Comment> commentList;
 }

@@ -3,10 +3,8 @@ package ru.yandex.practicum.blog.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.service.PostService;
 
@@ -26,7 +24,6 @@ public class PostController {
                               Model model) {
         Long postsByTag = postService.getPostsCountByTag(tag);
         List<Post> posts = postService.getAllPostsByPages(page, size, tag);
-
         int totalPages = (int) Math.ceil((double) postsByTag / size);
 
         model.addAttribute("currentSize", size);
@@ -36,13 +33,44 @@ public class PostController {
         return "posts";
     }
 
-    @GetMapping("/add-post")
-    public String getPosts(Model model) {
-        return "addPost";
+    @GetMapping("/post/add")
+    public String addPost(Model model) {
+        return "addOrEditPost";
     }
+
 
     @GetMapping("/post/{id}")
     public String getPostById(@PathVariable("id") Long id, Model model) {
+        Post post = postService.getPostWithCommentsById(id);
+        model.addAttribute("post", post);
         return "post";
+    }
+
+    @GetMapping("/post/{id}/edit")
+    public String editPost(@PathVariable("id") Long id,
+                           Model model) {
+        Post post = postService.getPostByIdForEdit(id);
+        model.addAttribute("post", post);
+        return "addOrEditPost";
+    }
+
+    @PostMapping("/post/save")
+    public String savePost(@ModelAttribute Post post,
+                           @RequestParam(value = "image", required = false) MultipartFile imageFile) {
+        postService.savePost(post, imageFile);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/post/{id}/delete")
+    public String deletePost(@PathVariable("id") Long id) {
+        postService.deletePost(id);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/post/{id}/like")
+    public String changePostLike(@PathVariable("id") Long id,
+                                 @RequestParam("like") Boolean like) {
+        postService.changePostLike(id, like);
+        return "redirect:/post/" + id;
     }
 }

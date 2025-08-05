@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Витрина товаров</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Немного Java-скрипта для добавления и редактирования комментариев, чтобы не было релоада всей страницы -->
+    <script>
+        function editComment(id) {
+             event.preventDefault();
+
+            var comment = document.getElementById("comment" + id);
+            var newComment = document.createElement("textarea");
+            newComment.innerHTML = comment.innerHTML;
+            newComment.rows = 3;
+            newComment.name = "text";
+            newComment.style = "width:100%;";
+
+
+            newComment.addEventListener('keydown', function(event) {
+              if (event.key === 'Enter' && event.ctrlKey) {
+            event.preventDefault();
+            var form = this.closest('form');
+            if (form) {
+                form.submit();
+                      }
+                }
+            });
+
+            comment.parentNode.replaceChild(newComment, comment);
+
+            var button = document.getElementById(id);
+            button.remove();
+
+            var newButton = document.createElement("button");
+            newButton.innerHTML = "&#10003;";
+            newButton.style="float:right;"
+            newComment.parentNode.appendChild(newButton);
+        }
+
+        function addComment(id) {
+            var button = document.getElementById("addCommentButton");
+            button.remove();
+
+            var form = document.getElementById("addCommentForm");
+
+            var newComment = document.createElement("textarea");
+            newComment.rows = 3;
+            newComment.name = "text";
+            newComment.style = "width:100%;";
+
+            newComment.addEventListener('keydown', function(event) {
+              if (event.key === 'Enter' && event.ctrlKey) {
+                 event.preventDefault();
+                 form.submit();
+              }
+            });
+
+            form.appendChild(newComment);
+
+            var newButton = document.createElement("button");
+            newButton.innerHTML = "&#10003;";
+            newButton.style="float:right;"
+            form.appendChild(newButton);
+        }
+    </script>
+</head>
+
+<body>
+<form th:action="@{/posts}" method="get">
+    <button type="submit" style="float:right;">На главную</button>
+</form>
+<table style="width:50%;margin-left:auto;margin-right:auto;">
+    <tr>
+        <td>
+            <!-- Вместо action ссылка на страницу редактирования поста -->
+            <form method="GET" th:action="@{/post/{id}/edit(id=${post.id})}">
+                <button style="float:left;">Редактирование поста</button>
+            </form>
+            <form method="POST" th:action="@{/post/{id}/delete(id=${post.id})}">
+                <button style="float:right;">Удаление поста</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h2 th:text="${post.title}"></h2>
+            <div>
+                <img th:src="@{${post.imagePath}}" style="max-width: 300px;">
+            </div>
+            <form th:action="@{/post/{id}/like(id=${post.id})}" method="post">
+                <button type="submit" name="like" value="true" class="icon-button">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+                <span th:text="${post.likes}"></span>
+                <button type="submit" name="like" value="false" class="icon-button">
+                    <i class="fas fa-thumbs-down"></i>
+                </button>
+            </form>
+            <p>
+                <span th:text="'#' + ${#strings.replace(post.tags, ',', ' #')}"></span>
+            </p>
+            <div style="white-space: pre-line;" th:text="${post.content}"></div>
+        </td>
+    <tr>
+    <tr>
+        <td>
+            <hr>
+            <h2>Комментарии</h2>
+        </td>
+    </tr>
+    <tr th:each="comment : ${post.commentList}">
+        <td style="border-left:thin solid grey;">
+            <form method="POST" th:action="@{/comment/{id}/edit(id=${comment.id}, postId=${post.id})}">
+                <span th:id="${'comment' + comment.id}" th:text="${comment.text}"></span>
+                <button th:id="${comment.id}" onclick="editComment(this.id)" style="float:right;">&#9998;</button>
+            </form>
+        </td>
+        <td>
+            <form method="POST" th:action="@{/comment/{id}/delete(id=${comment.id}, postId=${post.id})}">
+                <button style="float:right;">&#10007;</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form id="addCommentForm" th:action="@{/comment/add(postId=${post.id})}" method="post">
+                <button id="addCommentButton" style="float:right;" onclick="addComment()">Добавить комментарий</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>

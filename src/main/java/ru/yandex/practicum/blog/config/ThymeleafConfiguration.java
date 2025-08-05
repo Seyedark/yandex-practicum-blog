@@ -2,6 +2,8 @@ package ru.yandex.practicum.blog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
@@ -34,5 +36,10 @@ public class ThymeleafConfiguration {
         resolver.setTemplateEngine(templateEngine);
         resolver.setCharacterEncoding("UTF-8");
         return resolver;
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 }

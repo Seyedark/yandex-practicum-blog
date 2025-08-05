@@ -17,6 +17,9 @@
       <param-value>ru.yandex.practicum.blog.config.WebConfiguration</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <max-file-size>1048576</max-file-size>
+    </multipart-config>
   </servlet>
 
   <servlet-mapping>

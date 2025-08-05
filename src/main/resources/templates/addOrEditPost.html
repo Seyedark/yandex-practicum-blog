@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Создание/Редактирование поста</title>
+</head>
+
+<body>
+<form th:action="@{/posts}" method="get">
+    <button type="submit" style="float:right;">На главную</button>
+</form>
+<form method="POST" th:action="@{/post/save}" enctype="multipart/form-data">
+    <input type="hidden" name="id" th:if="${post != null}" th:value="${post.id}">
+    <input type="hidden" name="imagePath" th:if="${post != null}" th:value="${post.imagePath}">
+    <table style="width:50%;margin-left:auto;margin-right:auto;">
+        <tr>
+            <td>
+                <h3>Название</h3>
+                <textarea rows="2" style="width: 100%;" name="title"
+                          th:text="${post != null} ? ${post.title} : ''"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Изображение (Не более 1 МБ)</h3>
+                <input type="file" name="image"/>
+                <br/>
+                <div th:if="${post != null and post.imagePath !=null}">
+                    <h3>Текущее изображение</h3>
+                    <small style="display: block; margin-top: 5px; color: gray;">
+                        (Всегда будет заменено на новое, даже если оно пустое)</small>
+                    <img th:src="@{${post.imagePath}}" style="max-width: 300px;"/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Теги</h3>
+                <small style="display: block; margin-top: 5px; color: gray;">
+                    (Вводить без # через запятую)</small>
+                <textarea rows="2" style="width: 100%;" name="tags"
+                          th:text="${post != null} ? ${post.tags} : ''"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Текст</h3>
+                <textarea rows="30" style="width: 100%;" name="content"
+                          th:text="${post != null} ? ${post.content} : ''"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button style="float:right;" th:text="${post != null} ? 'Редактировать' : 'Сохранить'"></button>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const maxSize = 1048576;
+
+        if (file && file.size > maxSize) {
+            alert('Файл слишком большой! Максимальный размер: 1 МБ');
+            e.target.value = '';
+        }
+    });
+</script>
+</body>
