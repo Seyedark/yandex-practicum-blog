@@ -13,7 +13,7 @@ public interface PostRepository {
 
     Post getPostWithCommentsById(Long id);
 
-    Post getPostByIdForEditOrDelete(Long id);
+    Post getPostById(Long id);
 
     void deletePostAndCommentsById(Long id);
 

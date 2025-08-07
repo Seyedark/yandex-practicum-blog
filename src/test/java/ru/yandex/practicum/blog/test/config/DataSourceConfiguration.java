@@ -1,6 +1,7 @@
-package ru.yandex.practicum.blog.config;
+package ru.yandex.practicum.blog.test.config;
 
-import org.postgresql.Driver;
+
+import org.h2.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,10 +46,7 @@ public class DataSourceConfiguration {
         return new JdbcTemplate(dataSource);
     }
 
-    /**
-     * EventListener который по очереди выгружает все скрипты при старте приложения.
-     * Важно, скрипты должны быть в алфавитном порядке для успешной проливки
-     */
+
     @EventListener
     public void populate(ContextRefreshedEvent event) throws IOException {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);

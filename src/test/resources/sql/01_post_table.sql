@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS posts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title CLOB NOT NULL,
+    content CLOB NOT NULL,
+    image_path VARCHAR(255),
+    likes INTEGER DEFAULT 0,
+    tags CLOB
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT NOT NULL,
+    text CLOB NOT NULL,
+    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);

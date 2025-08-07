@@ -9,9 +9,10 @@
 <form th:action="@{/posts}" method="get">
     <button type="submit" style="float:right;">На главную</button>
 </form>
-<form method="POST" th:action="@{/post/save}" enctype="multipart/form-data">
+<form id="postForm" method="POST" th:action="@{/post/save}" enctype="multipart/form-data">
     <input type="hidden" name="id" th:if="${post != null}" th:value="${post.id}">
     <input type="hidden" name="imagePath" th:if="${post != null}" th:value="${post.imagePath}">
+    <input type="hidden" name="likes" th:if="${post != null}" th:value="${post.likes}">
     <table style="width:50%;margin-left:auto;margin-right:auto;">
         <tr>
             <td>
@@ -65,6 +66,20 @@
             alert('Файл слишком большой! Максимальный размер: 1 МБ');
             e.target.value = '';
         }
+    });
+</script>
+<script>
+    document.getElementById('postForm').addEventListener('submit', function(e) {
+      const title = this.querySelector('textarea[name="title"]').value.trim();
+      const content = this.querySelector('textarea[name="content"]').value.trim();
+
+      if (!title) {
+        alert('Пожалуйста, заполните поле Название');
+        e.preventDefault();
+      } else if (!content) {
+        alert('Пожалуйста, заполните поле Текст');
+        e.preventDefault();
+      }
     });
 </script>
 </body>

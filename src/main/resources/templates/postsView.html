@@ -68,7 +68,7 @@
                 <span th:text="${post.commentCount}"></span>
             </p>
             <p>
-                <span th:text="'#' + ${#strings.replace(post.tags, ',', ' #')}"></span>
+                <span th:if="${post.tags != null}" th:text="'#' + ${#strings.replace(post.tags, ',', ' #')}"></span>
             </p>
         </td>
     </tr>

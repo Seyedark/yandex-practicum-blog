@@ -30,11 +30,11 @@ public class PostController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("posts", posts);
-        return "posts";
+        return "postsView";
     }
 
     @GetMapping("/post/add")
-    public String addPost(Model model) {
+    public String addPost() {
         return "addOrEditPost";
     }
 

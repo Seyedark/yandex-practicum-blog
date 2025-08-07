@@ -34,9 +34,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostByIdForEditOrDelete(Long id) {
+    public Post getPostById(Long id) {
         String sql = """
-                SELECT id, title, content, tags, image_path
+                SELECT id, title, content, tags, image_path, likes
                 FROM posts p
                 WHERE p.id = ?
                 """;
@@ -52,6 +52,7 @@ public class PostRepositoryImpl implements PostRepository {
                         post.setContent(rs.getString("content"));
                         post.setTags(rs.getString("tags"));
                         post.setImagePath(rs.getString("image_path"));
+                        post.setLikes(rs.getInt("likes"));
                     }
                     return post;
                 });
@@ -60,7 +61,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post getPostWithCommentsById(Long id) {
         String sql = """
-                SELECT p.id as id, p.title as title, p.content, p.image_path, p.likes, p.tags,
+                SELECT p.id, p.title, p.content, p.image_path, p.likes, p.tags,
                 c.id as comment_id, c.text as text
                 FROM posts p
                 LEFT JOIN comments c ON p.id = c.post_id
@@ -83,7 +84,7 @@ public class PostRepositoryImpl implements PostRepository {
                             post.setLikes(rs.getInt("likes"));
                             post.setTags(rs.getString("tags"));
                         }
-                        Long commentId = rs.getLong("comment_id");
+                        long commentId = rs.getLong("comment_id");
                         if (commentId != 0) {
                             Comment c = new Comment();
                             c.setId(commentId);
@@ -102,31 +103,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void savePost(Post post) {
         if (post.getId() == null) {
-            // Сохранение нового поста
-            String sql = "INSERT INTO posts (title, content, image_path, likes, tags) " +
-                    "VALUES (?, ?, ?, ?, ?) RETURNING id";
-
-            jdbcTemplate.query(con -> {
-                PreparedStatement ps = con.prepareStatement(sql);
-                ps.setString(1, post.getTitle());
-                ps.setString(2, post.getContent());
-                ps.setString(3, post.getImagePath());
-                ps.setInt(4, post.getLikes());
-                ps.setString(5, post.getTags());
-                return ps;
-            }, (rs, rowNum) -> rs.getLong("id"));
+            String sql = "INSERT INTO posts (title, content, image_path, tags) " +
+                    "VALUES (?, ?, ?, ?)";
+            jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getImagePath(), post.getTags());
         } else {
-            String sql = "UPDATE posts SET title = ?, content = ?, image_path = ?, " +
-                    "likes = ?, tags = ? WHERE id = ?";
-            jdbcTemplate.update(
-                    sql,
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getImagePath(),
-                    post.getLikes(),
-                    post.getTags(),
-                    post.getId()
-            );
+            String sql = "UPDATE posts SET title = ?, content = ?, image_path = ?, likes = ?, tags = ? WHERE id = ?";
+            jdbcTemplate.update(sql, post.getTitle(), post.getContent(), post.getImagePath(), post.getLikes(), post.getTags(), post.getId());
         }
     }
 
@@ -150,18 +132,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = """
                 SELECT p.id,
                 p.title,
-                CASE
-                WHEN length(content) > 300 OR array_length(string_to_array(content, E'\\n'), 1) > 3 THEN
-                    substring(
-                        array_to_string(
-                            (string_to_array(content, E'\\n'))[1:3],
-                            E'\\n'
-                        ),
-                        1,
-                        300
-                    ) || '...'
-                ELSE content
-                END AS content,
+                p.content,
                 p.image_path,
                 p.likes, p.tags,
                 COUNT(c.id) as comment_count
