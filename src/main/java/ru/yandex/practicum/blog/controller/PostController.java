@@ -1,8 +1,10 @@
 package ru.yandex.practicum.blog.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.model.Post;
@@ -10,6 +12,7 @@ import ru.yandex.practicum.blog.service.PostService;
 
 import java.util.List;
 
+@Validated
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -55,7 +58,7 @@ public class PostController {
     }
 
     @PostMapping("/post/save")
-    public String savePost(@ModelAttribute Post post,
+    public String savePost(@Valid @ModelAttribute Post post,
                            @RequestParam(value = "image", required = false) MultipartFile imageFile) {
         postService.savePost(post, imageFile);
         return "redirect:/posts";

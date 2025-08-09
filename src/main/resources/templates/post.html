@@ -2,68 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Витрина товаров</title>
+    <title>Страница поста</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Немного Java-скрипта для добавления и редактирования комментариев, чтобы не было релоада всей страницы -->
-    <script>
-        function editComment(id) {
-             event.preventDefault();
-
-            var comment = document.getElementById("comment" + id);
-            var newComment = document.createElement("textarea");
-            newComment.innerHTML = comment.innerHTML;
-            newComment.rows = 3;
-            newComment.name = "text";
-            newComment.style = "width:100%;";
-
-
-            newComment.addEventListener('keydown', function(event) {
-              if (event.key === 'Enter' && event.ctrlKey) {
-            event.preventDefault();
-            var form = this.closest('form');
-            if (form) {
-                form.submit();
-                      }
-                }
-            });
-
-            comment.parentNode.replaceChild(newComment, comment);
-
-            var button = document.getElementById(id);
-            button.remove();
-
-            var newButton = document.createElement("button");
-            newButton.innerHTML = "&#10003;";
-            newButton.style="float:right;"
-            newComment.parentNode.appendChild(newButton);
-        }
-
-        function addComment(id) {
-            var button = document.getElementById("addCommentButton");
-            button.remove();
-
-            var form = document.getElementById("addCommentForm");
-
-            var newComment = document.createElement("textarea");
-            newComment.rows = 3;
-            newComment.name = "text";
-            newComment.style = "width:100%;";
-
-            newComment.addEventListener('keydown', function(event) {
-              if (event.key === 'Enter' && event.ctrlKey) {
-                 event.preventDefault();
-                 form.submit();
-              }
-            });
-
-            form.appendChild(newComment);
-
-            var newButton = document.createElement("button");
-            newButton.innerHTML = "&#10003;";
-            newButton.style="float:right;"
-            form.appendChild(newButton);
-        }
-    </script>
+    <script th:src="@{/postScripts.js}" defer></script>
 </head>
 
 <body>
