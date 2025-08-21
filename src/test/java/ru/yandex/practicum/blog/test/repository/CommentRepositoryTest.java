@@ -4,20 +4,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ActiveProfiles;
 import ru.yandex.practicum.blog.dao.CommentRepository;
 import ru.yandex.practicum.blog.dao.CommentRepositoryImpl;
 import ru.yandex.practicum.blog.model.Comment;
-import ru.yandex.practicum.blog.test.config.DataSourceConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, CommentRepositoryImpl.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@DataJdbcTest
+@ActiveProfiles("test")
+@Import(CommentRepositoryImpl.class)
 @DisplayName("Класс для проверки взаимодействия с репозиторием комментариев")
 public class CommentRepositoryTest {
     @Autowired

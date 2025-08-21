@@ -3,23 +3,22 @@ package ru.yandex.practicum.blog.test.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.yandex.practicum.blog.dao.CommentRepository;
 import ru.yandex.practicum.blog.service.CommentService;
-import ru.yandex.practicum.blog.test.config.CommentMockConfig;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringJUnitConfig(classes = CommentMockConfig.class)
+@SpringBootTest(classes = CommentService.class)
 @DisplayName("Класс для проверки взаимодействия с сервисом комментариев")
 public class CommentServiceTest {
-
 
     @Autowired
     private CommentService commentService;
 
-    @Autowired
+    @MockBean
     private CommentRepository commentRepository;
 
     @Test

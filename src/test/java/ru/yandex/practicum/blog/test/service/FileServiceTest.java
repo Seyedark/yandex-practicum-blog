@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.service.FileService;
 
@@ -17,19 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringJUnitConfig(classes = FileService.class)
+@SpringBootTest(classes = FileService.class)
+@ActiveProfiles("test")
 @DisplayName("Класс для проверки взаимодействия с файловым сервисом")
-@TestPropertySource(locations = "classpath:test-application.properties")
 public class FileServiceTest {
 
     @Value("${images.local.path}")
-    String imagesLocalPath;
+    private String imagesLocalPath;
 
     @Value("${images.url.path}")
-    String imagesUrlPath;
+    private String imagesUrlPath;
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
 
     @Test
     @DisplayName("Проверка создания файла на машине")

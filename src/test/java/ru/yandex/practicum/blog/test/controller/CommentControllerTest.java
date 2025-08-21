@@ -1,17 +1,16 @@
 package ru.yandex.practicum.blog.test.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import ru.yandex.practicum.blog.controller.CommentController;
 import ru.yandex.practicum.blog.dao.CommentRepository;
-import ru.yandex.practicum.blog.test.config.CommentControllerConfig;
-import ru.yandex.practicum.blog.test.config.WebConfiguration;
+import ru.yandex.practicum.blog.service.CommentService;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,23 +18,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitConfig(classes = {CommentControllerConfig.class, WebConfiguration.class})
-@WebAppConfiguration
+
+@SpringBootTest(classes = {CommentController.class, CommentService.class})
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 @DisplayName("Класс для проверки взаимодействия контроллером комментариев")
 public class CommentControllerTest {
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
-    @Autowired
-    CommentRepository commentRepository;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    @MockBean
+    private CommentRepository commentRepository;
 
     @Test
     @DisplayName("Проверка интеграции метода редактирования комментария до репозитория")

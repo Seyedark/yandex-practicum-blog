@@ -3,30 +3,32 @@ package ru.yandex.practicum.blog.test.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dao.PostRepository;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.service.FileService;
 import ru.yandex.practicum.blog.service.PostService;
-import ru.yandex.practicum.blog.test.config.PostMockConfig;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@SpringJUnitConfig(classes = PostMockConfig.class)
+@SpringBootTest(classes = PostService.class)
+@ActiveProfiles("test")
 @DisplayName("Класс для проверки взаимодействия с сервисом постов")
 public class PostServiceTest {
 
     @Autowired
     private PostService postService;
 
-    @Autowired
+    @MockBean
     private PostRepository postRepository;
 
-    @Autowired
+    @MockBean
     private FileService fileService;
 
 

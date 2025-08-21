@@ -4,24 +4,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ActiveProfiles;
 import ru.yandex.practicum.blog.dao.PostRepository;
 import ru.yandex.practicum.blog.dao.PostRepositoryImpl;
 import ru.yandex.practicum.blog.model.Comment;
 import ru.yandex.practicum.blog.model.Post;
-import ru.yandex.practicum.blog.test.config.DataSourceConfiguration;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostRepositoryImpl.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+
+@DataJdbcTest
+@ActiveProfiles("test")
+@Import(PostRepositoryImpl.class)
 @DisplayName("Класс для проверки взаимодействия с репозиторием постов")
 public class PostRepositoryTest {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

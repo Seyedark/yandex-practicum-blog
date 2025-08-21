@@ -1,20 +1,19 @@
 package ru.yandex.practicum.blog.test.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import ru.yandex.practicum.blog.controller.PostController;
 import ru.yandex.practicum.blog.dao.PostRepository;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.service.FileService;
-import ru.yandex.practicum.blog.test.config.CommentControllerConfig;
-import ru.yandex.practicum.blog.test.config.WebConfiguration;
+import ru.yandex.practicum.blog.service.PostService;
 
 import java.util.List;
 
@@ -22,25 +21,22 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringJUnitConfig(classes = {CommentControllerConfig.class, WebConfiguration.class})
-@WebAppConfiguration
+
+@SpringBootTest(classes = {PostController.class, PostService.class})
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 @DisplayName("Класс для проверки взаимодействия контроллером постов")
 public class PostControllerTest {
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    PostRepository postRepository;
+    @MockBean
+    private PostRepository postRepository;
 
-    @Autowired
-    FileService fileService;
+    @MockBean
+    private FileService fileService;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
 
     @Test
     @DisplayName("Проверка интеграции метода получения списка постов до репозитория")
